@@ -30,8 +30,8 @@ class View(ft.UserControl):
 
         #ROW with some controls
         # text field for the name
-        self._ddyear = ft.Dropdown(label="Anno")
-        self._ddcolor = ft.Dropdown(label="Colore")
+        self._ddyear = ft.Dropdown(label="Anno", options=[ft.dropdown.Option("2015"),ft.dropdown.Option("2016"),ft.dropdown.Option("2017"),ft.dropdown.Option("2018"),] )
+        self._ddcolor = ft.Dropdown(label="Colore", options=[])
 
         # button for the "creat graph" reply
         self.btn_graph = ft.ElevatedButton(text="Crea Grafo", on_click=self._controller.handle_graph)
@@ -45,8 +45,8 @@ class View(ft.UserControl):
         self.txtOut = ft.ListView(expand=1, spacing=10, padding=10, auto_scroll=True)
         self._page.controls.append(self.txtOut)
 
-        self._ddnode = ft.Dropdown(label="Product")
-        self.btn_search = ft.ElevatedButton(text="Cerca Percorso", on_click=self._controller.handle_search)
+        self._ddnode = ft.Dropdown(label="Product",disabled=True)
+        self.btn_search = ft.ElevatedButton(text="Cerca Percorso",disabled=True, on_click=self._controller.handle_search)
         row2 = ft.Row([self._ddnode, self.btn_search],
                       alignment=ft.MainAxisAlignment.CENTER)
         self._page.controls.append(row2)
