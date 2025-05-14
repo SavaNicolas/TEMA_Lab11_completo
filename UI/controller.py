@@ -11,6 +11,7 @@ class Controller:
         self._model = model
         self._listYear = []
         self._listColor = []
+        self._prodottoScelto = None
 
     def fillDD(self):
         colors= DAO.getAllColors()
@@ -75,13 +76,44 @@ class Controller:
                 self._view.update_page()
         else:
             self._view.txtOut.controls.append(ft.Text(f"non ci sono duplicati"))
-
-
         self._view.update_page()
 
-    def fillDDProduct(self):
-        pass
+        #prendo i nodi e li metto nella tendina del grafo
+        nodi = self._model.getNodi()
+        self.fillDDProduct(nodi)
+        self._view.update_page()
+
+
+    def fillDDProduct(self,nodi):
+        for prodotto in nodi:  # sto appendendo al dropdown l'oggetto reatiler
+            self._view._ddnode.options.append(
+                ft.dropdown.Option(key=prodotto.Product_number,  # 🔑 Chiave univoca dell'opzione
+                                   text=prodotto.Product_number,  # 🏷️ Testo visibile nel menu a tendina
+                                   data=prodotto,
+                                   # 📦 Oggetto completo, utile per accedere a tutti gli attributi dopo la selezione
+                                   on_click=self.read_prodotto))  # salvati l'oggetto da qualche parte
+
+    def read_prodotto(self, e):
+        self._prodottoScelto = e.control.data  # l'abbiamo inizializzata a None
+        # e.control.data è il risultato di onclick sopra
 
 
     def handle_search(self, e):
-        pass
+        self._view.txtOut2.controls.clear()
+
+        #prendi il valore di ddnode
+        nodoPartenza= self._prodottoScelto
+
+        # controlli
+        if nodoPartenza is None:
+            self._view.txtOut.controls.clear()
+            self._view.txtOut.controls.append(ft.Text("seleziona un nodo di Partenza"))
+            self._view.update_page()
+            return
+        #chiama metodo ricorsione che ti restituisce il percorso che chiede
+        risultato = self._model.handle_search(nodoPartenza)
+
+        self._view.txtOut2.controls.append(ft.Text(f"strada richiesta ha:{risultato} archi"))
+        self._view.update_page()
+
+

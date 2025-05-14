@@ -1,3 +1,5 @@
+import copy
+
 import networkx as nx
 
 from database.DAO import DAO
@@ -66,6 +68,68 @@ class Model:
             if nodi.count(j)>1:
                 risultato.add(j)
         return risultato
+
+
+    ########################################################parte 2
+    def getNodi(self):
+        nodes= list(self._grafo.nodes())
+        return nodes
+
+    def handle_search(self,nodoSorgente):
+        self.soluzioni = []
+        self._ricorsione([nodoSorgente], nodoSorgente)
+        return len(self.soluzioni) - 1  # perchè ti chiede numero di archi (che è uguale a nodi-1)
+
+
+    def _ricorsione(self, parziale, nodoSorgente):
+        # prendo vicini
+        neighbors = list(self._grafo.neighbors(nodoSorgente))
+        # condizione terminale: o non ho più vicini oppure lista di vicini ammissibili = []
+        if len(neighbors)==0 or len(self.viciniAmmissibili(neighbors,parziale))==0:
+            self.soluzioni.append(copy.deepcopy(parziale))  # RICORDA QUANDO APPENDI LA SOLUZIONE DI FARE LA COPIA
+            return
+        # caso ricorsivo
+        else:#significa che posso aggiungere un vicino
+            listaAmmissibili=self.viciniAmmissibili(neighbors,parziale)
+            for n in listaAmmissibili: #itero sul vicino
+                # lo appendo alla parziale
+                parziale.append(n)
+                # vado avanti nella ricorsione
+                self._ricorsione(parziale, n)
+                # backtracking
+                parziale.pop()
+
+    def viciniAmmissibili(self,neighbors,parziale):
+        """returno una lista di ammissibili"""
+
+        nodiAmmissibili=[]
+        for n in neighbors:
+            if self.possoAggiungere(n,parziale):
+                nodiAmmissibili.append(n)
+        return nodiAmmissibili
+
+    def possoAggiungere(self,nodo,parziale):
+        if len(parziale)<2:
+            return True
+        #se non è in parziale, controllo che il peso sia maggiore del precedente
+        #prendo arco del predecessore del nodo con il suo precedente e se è maggiore dell'arco che c'è tra il nodo scelto e il predecessore returno true
+        index=1
+        if self._grafo[parziale[-1]][parziale[-2]]["weight"]<= self._grafo[parziale[-1]][nodo]["weight"]:
+            for i in range(len(parziale)-1):
+                if self._grafo[parziale[i]][parziale[i+1]]== self._grafo[parziale[-1]][nodo]:
+                    index=0 #se è uguale mi mette a 0
+
+        if index==1:
+            return True
+        else:
+            return False
+
+
+
+
+
+
+
 
 
 
