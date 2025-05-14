@@ -75,54 +75,61 @@ class Model:
         nodes= list(self._grafo.nodes())
         return nodes
 
-    def handle_search(self,nodoSorgente):
-        self.soluzioni = []
+    def handle_search(self, nodoSorgente):
+        self.percorso_migliore = []  # Memorizza il percorso più lungo trovato
         self._ricorsione([nodoSorgente], nodoSorgente)
-        return len(self.soluzioni) - 1  # perchè ti chiede numero di archi (che è uguale a nodi-1)
-
+        # Restituisce il numero massimo di archi (nodi - 1)
+        return len(self.percorso_migliore) - 1
 
     def _ricorsione(self, parziale, nodoSorgente):
-        # prendo vicini
+        # Prendo i vicini del nodo corrente
         neighbors = list(self._grafo.neighbors(nodoSorgente))
-        # condizione terminale: o non ho più vicini oppure lista di vicini ammissibili = []
-        if len(neighbors)==0 or len(self.viciniAmmissibili(neighbors,parziale))==0:
-            self.soluzioni.append(copy.deepcopy(parziale))  # RICORDA QUANDO APPENDI LA SOLUZIONE DI FARE LA COPIA
+
+        # Condizione terminale: nessun vicino o nessun vicino ammissibile
+        listaAmmissibili = self.viciniAmmissibili(neighbors, parziale)
+        if len(neighbors) == 0 or len(listaAmmissibili) == 0:
+            # Controllo se il percorso corrente è il più lungo trovato finora
+            if len(parziale) > len(self.percorso_migliore):
+                self.percorso_migliore = copy.deepcopy(parziale)
+
             return
-        # caso ricorsivo
-        else:#significa che posso aggiungere un vicino
-            listaAmmissibili=self.viciniAmmissibili(neighbors,parziale)
-            for n in listaAmmissibili: #itero sul vicino
-                # lo appendo alla parziale
-                parziale.append(n)
-                # vado avanti nella ricorsione
-                self._ricorsione(parziale, n)
-                # backtracking
-                parziale.pop()
 
-    def viciniAmmissibili(self,neighbors,parziale):
-        """returno una lista di ammissibili"""
+        # Caso ricorsivo: esploro i vicini ammissibili
+        for n in listaAmmissibili:
+            # Aggiungo il vicino al percorso parziale
+            parziale.append(n)
+            # Procedo ricorsivamente
+            self._ricorsione(parziale, n)
+            # Backtracking: rimuovo il nodo appena aggiunto
+            parziale.pop()
 
-        nodiAmmissibili=[]
+    def viciniAmmissibili(self, neighbors, parziale):
+        """Restituisce una lista di vicini ammissibili"""
+        nodiAmmissibili = []
         for n in neighbors:
-            if self.possoAggiungere(n,parziale):
+            if self.possoAggiungere(n, parziale):
                 nodiAmmissibili.append(n)
         return nodiAmmissibili
 
-    def possoAggiungere(self,nodo,parziale):
-        if len(parziale)<2:
+    def possoAggiungere(self, nodo, parziale):
+        """Verifica se è possibile aggiungere un nodo al percorso"""
+        # Se il percorso ha meno di 2 nodi, posso aggiungere il nuovo nodo
+        if len(parziale) < 2:
             return True
-        #se non è in parziale, controllo che il peso sia maggiore del precedente
-        #prendo arco del predecessore del nodo con il suo precedente e se è maggiore dell'arco che c'è tra il nodo scelto e il predecessore returno true
-        index=1
-        if self._grafo[parziale[-1]][parziale[-2]]["weight"]<= self._grafo[parziale[-1]][nodo]["weight"]:
-            for i in range(len(parziale)-1):
-                if self._grafo[parziale[i]][parziale[i+1]]== self._grafo[parziale[-1]][nodo]:
-                    index=0 #se è uguale mi mette a 0
 
-        if index==1:
+        # Ottengo il peso dell'ultimo arco aggiunto e del nuovo arco
+        ultimo_peso = self._grafo[parziale[-2]][parziale[-1]]["weight"]
+        nuovo_peso = self._grafo[parziale[-1]][nodo]["weight"]
+
+        # Controllo se il nuovo arco rispetta il criterio del peso crescente
+        if nuovo_peso >= ultimo_peso:
+            # Controllo anche che l'arco non sia già presente nel percorso
+            for i in range(len(parziale)-1): #se abbiamo già attraversato quella strada
+                if (parziale[i], parziale[i + 1]) == (parziale[-1], nodo):
+                    return False
             return True
-        else:
-            return False
+        return False
+
 
 
 
