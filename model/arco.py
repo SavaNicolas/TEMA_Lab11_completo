@@ -7,4 +7,3 @@ from model.go_products import Go_product
 class Arco:
     nodo1:Go_product
     nodo2: Go_product
-    peso:int

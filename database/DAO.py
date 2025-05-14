@@ -59,23 +59,22 @@ class DAO():
         conn.close()
         return result
 
-    def addEdges(idMapObjects,colore,anno):
+    def addEdges(idU,idV,idMapObjects,anno):
         conn = DBConnect.get_connection()
 
         result = []
 
         cursor = conn.cursor(dictionary=True)
-        query = """SELECT s.Product_number as nodo1, s1.Product_number as nodo2,s.`Date`, COUNT(*) as peso
-FROM go_products g, go_daily_sales s, go_daily_sales s1
-where g.Product_number = s.Product_number and g.Product_color = %s and YEAR(s.`Date`)= %s 
-and s.Retailer_code =s1.Retailer_code
-and s.`Date` =s1.`Date`
-and s.Product_number <> s1.Product_number 
-group by s.Product_number, s1.Product_number, s.`Date`"""
-        cursor.execute(query,(colore,anno))
+        query = """SELECT DISTINCT s.Product_number as nodo1, s1.Product_number as nodo2, s.`Date`
+FROM go_daily_sales s, go_daily_sales s1
+WHERE YEAR(s.`Date`)= %s and s.`Date` = s1.`Date` and s.Retailer_code = s1.Retailer_code
+and s.Product_number=%s and s1.Product_number=%s
+group by s.Product_number, s1.Product_number,s.`Date`"""
+        cursor.execute(query,(anno,idU,idV))
+        #devo fare la group by anche sul rivenditore per evitare che ci siano doppioni di p1,p2,rivenditore1
 
         for row in cursor:
-            result.append(Arco(idMapObjects[row["nodo1"]],idMapObjects[row["nodo2"]],row["peso"]))
+            result.append(Arco(idMapObjects[row["nodo1"]],idMapObjects[row["nodo2"]]))
             # equivalente a fare (ArtObject(object_id= row["object_id"])
         cursor.close()
         conn.close()

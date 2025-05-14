@@ -60,6 +60,25 @@ class Controller:
             ft.Text(f"il grafo ha {self._model.getNumNodi()} nodi e {self._model.getNumArchi()} archi"))
         self._view.update_page()
 
+        #stampo txt result 2
+        archi=self._model.getMaggiori()
+        duplicati = self._model.getDuplicati(archi)
+        for i in archi:
+            self._view.txtOut.controls.append(ft.Text(f"arco da {i[0].Product_number} a {i[1].Product_number} ha peso= {i[2]["weight"]}"))
+
+        self._view.txtOut.controls.append(ft.Text(f"prodotti duplicati:"))
+        self._view.update_page()
+
+        if duplicati!=[]:
+            for i in duplicati:
+                self._view.txtOut.controls.append(ft.Text(f"-{i}"))
+                self._view.update_page()
+        else:
+            self._view.txtOut.controls.append(ft.Text(f"non ci sono duplicati"))
+
+
+        self._view.update_page()
+
     def fillDDProduct(self):
         pass
 
