@@ -16,6 +16,8 @@ class Model:
             self.idMapProducts[p.Product_number] = p
 
     def buildGraph(self,colore,anno):
+        #puliamo il grafo
+        self._grafo.clear()
         self._products = DAO.getProducts_colore(colore) #nazioni prese in base all'anno indicato
         # aggiungiamo i nodi(li ho nelle fermate)
         self._grafo.add_nodes_from(self._products)
