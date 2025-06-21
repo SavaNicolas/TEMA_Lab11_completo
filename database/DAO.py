@@ -58,7 +58,8 @@ class DAO():
         cursor.close()
         conn.close()
         return result
-
+    
+    @staticmethod
     def addEdges(idU,idV,idMapObjects,anno):
         conn = DBConnect.get_connection()
 
