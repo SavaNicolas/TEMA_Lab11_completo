@@ -14,7 +14,7 @@ class Controller:
         self._prodottoScelto = None
 
     def fillDDColor(self):#metti options[] in view
-        colori= DAO.getAllColors()
+        colori= self._model.getAllColors()
         for i in colori:
             self._view._ddcolor.options.append(ft.dropdown.Option(i))
         self._view.update_page()
