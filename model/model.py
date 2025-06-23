@@ -15,12 +15,26 @@ class Model:
         for p in self._productsAll:
             self.idMapProducts[p.Product_number] = p
 
+        #mappa di nodi
+        self.idMapNodes = {}
+        
+        #nodi
+        self._products = []
+        #ricorsione
+        self.percorso_migliore = []
+        self.Peso_migliore=0
+    
+
     def buildGraph(self,colore,anno):
         #puliamo il grafo
         self._grafo.clear()
         self._products = DAO.getProducts_colore(colore) #nazioni prese in base all'anno indicato
         # aggiungiamo i nodi(li ho nelle fermate)
         self._grafo.add_nodes_from(self._products)
+
+        #mappa per i nodi
+        for p in self._products:
+            self.idMapNodes[p.Product_number] = p
         # aggiungo archi
         self.addEdges(anno)
 
