@@ -43,6 +43,24 @@ class Model:
                     else:
                         self._grafo.add_edge(edges[0].nodo1, edges[0].nodo2, weight=len(edges))
 
+    #addEdges con query che ti restituisce il peso:
+    def addEdges1(self,anno):
+    for i in self._products:#prendo nodo1
+        for j in self._products:#prendo nodo2
+            if i!=j:#se son diversi controllo con la query
+                idu=i.Product_number
+                idv=j.Product_number
+                edge=DAO.addEdges(anno, idu,idv,self.idMapProducts)
+                #mi restituisce l'arco con il peso
+
+                if not edge:
+                    continue
+                #se c'è: [(arco)]
+                if self._grafo.has_edge(edge[0].nodo1, edge[0].nodo2):  # controllo se esiste già l'arco
+                    continue
+                else:
+                    self._grafo.add_edge(edge[0].nodo1, edge[0].nodo2, weight=edge[0].peso)
+
     def getNumNodi(self):
         return len(self._grafo.nodes())
 
