@@ -81,6 +81,9 @@ class Model:
     def getNumArchi(self):
         return len(self._grafo.edges())
 
+    def getNodi(self):
+        return self._products
+
     def getMaggiori(self):
         archi= list(self._grafo.edges(data=True))
         #ordino in base al peso
