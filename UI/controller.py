@@ -13,10 +13,16 @@ class Controller:
         self._listColor = []
         self._prodottoScelto = None
 
-    def fillDD(self):
-        colors= DAO.getAllColors()
-        for color in colors:
-            self._view._ddcolor.options.append(ft.dropdown.Option(text=color))
+    def fillDDColor(self):
+        colori= DAO.getAllColors()
+        for i in colori:
+            self._view._ddcolor.options.append(ft.dropdown.Option(i))
+        self._view.update_page()
+
+    def fillDDYear(self):
+        for i in list(range(2015,2019)):
+            self._view._ddyear.options.append(ft.dropdown.Option(i))
+        self._view.update_page()
 
 
     def handle_graph(self, e):
