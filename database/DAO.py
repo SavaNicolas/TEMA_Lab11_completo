@@ -81,6 +81,19 @@ group by s.Product_number, s1.Product_number,s.`Date`"""
         conn.close()
         return result
 
+#query che ti da l'arco con il peso:
+"""select t.nodo1, t.nodo2, count(*) as peso
+FROM (SELECT g.Product_number as nodo1, g1.Product_number as nodo2,count(*)
+from go_daily_sales g, go_daily_sales g1
+where g.Date=g1.Date
+and YEAR(g.Date) = %s
+and g.Retailer_code =g1.Retailer_code
+and g.Product_number = %s
+and g1.Product_number = %s
+group by g.Product_number, g1.Product_number,g.`Date`)t
+group by t.nodo1, t.nodo2
+"""
+
 
 
 
