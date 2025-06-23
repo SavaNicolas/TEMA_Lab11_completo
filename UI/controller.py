@@ -13,13 +13,13 @@ class Controller:
         self._listColor = []
         self._prodottoScelto = None
 
-    def fillDDColor(self):
+    def fillDDColor(self):#metti options[] in view
         colori= DAO.getAllColors()
         for i in colori:
             self._view._ddcolor.options.append(ft.dropdown.Option(i))
         self._view.update_page()
 
-    def fillDDYear(self):
+    def fillDDYear(self):#metti options[] in view
         for i in list(range(2015,2019)):
             self._view._ddyear.options.append(ft.dropdown.Option(i))
         self._view.update_page()
